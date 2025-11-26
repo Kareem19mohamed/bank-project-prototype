@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 #include <fstream>
 #include "MyLibrary.h"
 #include <string>
@@ -13,21 +14,21 @@ const string Separator = "#//#";
 
 enum enMainMenu
 {
-    ShowClientsList = 1,
-    AddNewClient = 2,
-    DeleteClient = 3,
-    UpdateClient = 4,
-    FindClient = 5,
-    Transactions = 6,
-    Exit = 7
+    eShowClientsList = 1,
+    eAddNewClient = 2,
+    eDeleteClient = 3,
+    eUpdateClient = 4,
+    eFindClient = 5,
+    eTransactions = 6,
+    eExit = 7
 };
 
 enum enTransactions
 {
-    Deposit = 1,
-    Withdraw = 2,
-    TotalBalances = 3,
-    MainMenu = 4
+    eDeposit = 1,
+    eWithdraw = 2,
+    eTotalBalances = 3,
+    eMainMenu = 4
 };
 
 struct stClient
@@ -132,8 +133,11 @@ vector<stClient> LoadDataFromFile(string FileName)
     {
         while (getline(MyFile, Line))
         {
-            Client = ConvertLineToRecord(Line);
-            Data.push_back(Client);
+            if (Line != "")
+            {
+                Client = ConvertLineToRecord(Line);
+                Data.push_back(Client);
+            }
         }
         MyFile.close();
     }
@@ -564,36 +568,36 @@ void TransactionsProcess(vector<stClient>& Clients)
         system("cls");
         switch (Option)
         {
-        case Deposit:
+        case enTransactions::eDeposit:
         {
-            AccountName = ReadString("Enter account name: ");
+            AccountName = ReadString("Enter account number: ");
             Deposit(AccountName, Clients);
             cout << "Press any key to return to transaction menu___";
             system("pause>0");
             break;
         }
-        case Withdraw:
+        case enTransactions::eWithdraw:
         {
-            AccountName = ReadString("Enter account name: ");
+            AccountName = ReadString("Enter account number: ");
             Withdraw(AccountName, Clients);
             cout << "Press any key to return to transaction menu___";
             system("pause>0");
             break;
         }
-        case TotalBalances:
+        case enTransactions::eTotalBalances:
         {
             TotalBalances(Clients);
             cout << "Press any key to return to transaction menu___";
             system("pause>0");
             break;
         }
-        case MainMenu:
+        case eMainMenu:
         {
             return;
         }
         }
         system("cls");
-    } while (Option != MainMenu);
+    } while (Option != eMainMenu);
 }
 
 void BankSystem(vector<stClient>& Clients, enMainMenu Choice)
@@ -602,21 +606,21 @@ void BankSystem(vector<stClient>& Clients, enMainMenu Choice)
     system("cls");
     switch (Choice)
     {
-    case ShowClientsList:
+    case eShowClientsList:
     {
         PrintAllClientsData(Clients);
         cout << "Press any key to return to main menu___";
         system("pause>0");
         break;
     }
-    case AddNewClient:
+    case enMainMenu::eAddNewClient:
     {
         AddClient();
         cout << "Press any key to return to main menu___";
         system("pause>0");
         break;
     }
-    case DeleteClient:
+    case eDeleteClient:
     {
         AccountNum = ReadString("Enter account number:");
         DeleteRecordFromFile(AccountNum, Clients);
@@ -624,7 +628,7 @@ void BankSystem(vector<stClient>& Clients, enMainMenu Choice)
         system("pause>0");
         break;
     }
-    case UpdateClient:
+    case eUpdateClient:
     {
         AccountNum = ReadString("Enter account number:");
         UpdateDataInFile(AccountNum, Clients);
@@ -632,7 +636,7 @@ void BankSystem(vector<stClient>& Clients, enMainMenu Choice)
         system("pause>0");
         break;
     }
-    case FindClient:
+    case eFindClient:
     {
         AccountNum = ReadString("Enter account number:");
         PrintClientCard(AccountNum, Clients);
@@ -640,12 +644,12 @@ void BankSystem(vector<stClient>& Clients, enMainMenu Choice)
         system("pause>0");
         break;
     }
-    case Transactions:
+    case eTransactions:
     {
         TransactionsProcess(Clients);
         break;
     }
-    case Exit:
+    case eExit:
     {
         break;
     }
@@ -666,7 +670,7 @@ void Bank()
         Choice = ChoiceToEnum(Input);
         BankSystem(Clients, Choice);
         Clients = LoadDataFromFile(FileName);
-    } while (Choice != enMainMenu::Exit);
+    } while (Choice != enMainMenu::eExit);
 }
 
 int main()

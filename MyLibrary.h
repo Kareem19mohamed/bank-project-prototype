@@ -1,6 +1,8 @@
 #pragma once
 
 #include <iostream>
+#include <limits>
+
 using namespace std;
 
 namespace MyLibrary
@@ -12,6 +14,13 @@ namespace MyLibrary
 
 		cout << message;
 		cin >> num;
+		while (cin.fail())
+		{
+			cin.clear();
+			cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			cout << "Invalid Number, Enter a valid one:" << endl;
+			cin >> num;
+		}
 
 		return num;
 	}
